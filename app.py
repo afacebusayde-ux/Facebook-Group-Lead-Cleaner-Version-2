@@ -21,6 +21,13 @@ COUNTRY_NORMALIZE = {
     "united states of america": "United States",
     "uk": "United Kingdom",
     "u.k.": "United Kingdom",
+    "deutschland": "Germany",
+    "espana": "Spain",
+    "españa": "Spain",
+    "italia": "Italy",
+    "brasil": "Brazil",
+    "mexico": "Mexico",
+    "méxico": "Mexico",
 }
 
 # Every country name/alias -> canonical country name. Used to detect a
@@ -122,7 +129,7 @@ LABEL_PATTERNS = [
 ]
 LABEL_REGEX = re.compile("|".join(LABEL_PATTERNS), re.IGNORECASE)
 
-NAME_ANCHOR_REGEX = re.compile(r"member\s*[\u00b7\.\-]\s*requested", re.IGNORECASE)
+NAME_ANCHOR_REGEX = re.compile(r"^(member\s*[\u00b7\.\-]\s*)?requested$", re.IGNORECASE)
 EMAIL_REGEX = re.compile(r"[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}")
 LIVES_IN_REGEX = re.compile(r"^lives in\s+(.+)$", re.IGNORECASE)
 COUNTRY_LINE_REGEX = re.compile(r"^country$", re.IGNORECASE)
@@ -157,7 +164,7 @@ def split_into_blocks(raw_text: str):
     lines = raw_text.splitlines()
     anchors = []
     for i, line in enumerate(lines):
-        if NAME_ANCHOR_REGEX.search(line):
+        if NAME_ANCHOR_REGEX.match(line.strip()):
             j = i - 1
             while j >= 0 and not lines[j].strip():
                 j -= 1

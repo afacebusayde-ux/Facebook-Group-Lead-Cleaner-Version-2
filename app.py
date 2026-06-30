@@ -272,7 +272,7 @@ def parse_leads(raw_text: str, group_name: str, remark_question: str):
 
 @st.cache_data(ttl=300, show_spinner=False)
 def fetch_existing_emails(sheet_id: str, tab_name: str):
-    """Fetch column I from the given Google Sheet tab via the public CSV
+    """Fetch column A from the given Google Sheet tab via the public CSV
     export. Returns (set_of_emails, error_message_or_None)."""
     if not sheet_id or not tab_name:
         return set(), "Missing sheet ID or tab name."
@@ -284,10 +284,10 @@ def fetch_existing_emails(sheet_id: str, tab_name: str):
         resp = requests.get(url, timeout=15)
         resp.raise_for_status()
         df = pd.read_csv(io.StringIO(resp.text), header=None)
-        if df.shape[1] < 9:
-            return set(), "Column I not found in fetched sheet (sheet may not be public)."
-        col_i = df.iloc[:, 8].dropna().astype(str)
-        emails = {e.strip().lower() for e in col_i if "@" in e}
+        if df.shape[1] < 1:
+            return set(), "Column A not found in fetched sheet (sheet may not be public)."
+        col_a = df.iloc[:, 0].dropna().astype(str)
+        emails = {e.strip().lower() for e in col_a if "@" in e}
         return emails, None
     except Exception as e:  # noqa: BLE001
         return set(), f"Could not fetch sheet automatically ({e})."
@@ -306,9 +306,9 @@ with st.sidebar:
     )
     sheet_id = st.text_input(
         "Google Sheet ID",
-        value="14BzYkTHu4ZCYx9ckQiBBjQDVSWM4PjVJ-7cnkhxhLio",
+        value="18FykVMeG8GR_gVrMLRlbINKHTLS3kgJvtlr3-nQi_8o",
     )
-    tab_name = st.text_input("Tab name", value="Email List 2023-2026")
+    tab_name = st.text_input("Tab name", value="Sheet1")
     manual_emails_text = st.text_area(
         "Or paste existing emails manually (one per line) — used as a "
         "fallback / addition if the sheet can't be auto-fetched",
